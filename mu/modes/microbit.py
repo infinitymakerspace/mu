@@ -624,7 +624,8 @@ class MicrobitMode(MicroPythonMode):
         self.file_manager_thread.started.\
             connect(self.file_manager.on_start)
         self.fs = self.view.add_filesystem(self.workspace_dir(),
-                                           self.file_manager)
+                                           self.file_manager,
+                                           self.name)
         self.fs.set_message.connect(self.editor.show_status_message)
         self.fs.set_warning.connect(self.view.show_message)
         self.file_manager_thread.start()

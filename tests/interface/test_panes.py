@@ -438,7 +438,7 @@ def test_MicrobitFileList_init():
     """
     Check the widget references the user's home and allows drag and drop.
     """
-    mfs = mu.interface.panes.MicrobitFileList('home/path')
+    mfs = mu.interface.panes.MicrobitFileList('home/path', 'device name')
     assert mfs.home == 'home/path'
     assert mfs.dragDropMode() == mfs.DragDrop
 
@@ -448,12 +448,12 @@ def test_MicrobitFileList_dropEvent():
     Ensure a valid drop event is handled as expected.
     """
     mock_event = mock.MagicMock()
-    source = mu.interface.panes.LocalFileList('homepath')
+    source = mu.interface.panes.LocalFileList('homepath', 'device name')
     mock_item = mock.MagicMock()
     mock_item.text.return_value = 'foo.py'
     source.currentItem = mock.MagicMock(return_value=mock_item)
     mock_event.source.return_value = source
-    mfs = mu.interface.panes.MicrobitFileList('homepath')
+    mfs = mu.interface.panes.MicrobitFileList('homepath', 'device name')
     mfs.disable = mock.MagicMock()
     mfs.set_message = mock.MagicMock()
     mfs.put = mock.MagicMock()
@@ -472,7 +472,7 @@ def test_MicrobitFileList_dropEvent_wrong_source():
     mock_event = mock.MagicMock()
     source = mock.MagicMock()
     mock_event.source.return_value = source
-    mfs = mu.interface.panes.MicrobitFileList('homepath')
+    mfs = mu.interface.panes.MicrobitFileList('homepath', 'device name')
     mfs.findItems = mock.MagicMock()
     mfs.dropEvent(mock_event)
     assert mfs.findItems.call_count == 0
@@ -482,11 +482,11 @@ def test_MicrobitFileList_on_put():
     """
     A message and list_files signal should be emitted.
     """
-    mfs = mu.interface.panes.MicrobitFileList('homepath')
+    mfs = mu.interface.panes.MicrobitFileList('homepath', 'device name')
     mfs.set_message = mock.MagicMock()
     mfs.list_files = mock.MagicMock()
     mfs.on_put('my_file.py')
-    msg = "'my_file.py' successfully copied to micro:bit."
+    msg = "'my_file.py' successfully copied to device."
     mfs.set_message.emit.assert_called_once_with(msg)
     mfs.list_files.emit.assert_called_once_with()
 
@@ -500,7 +500,7 @@ def test_MicrobitFileList_contextMenuEvent():
     mock_action = mock.MagicMock()
     mock_menu.addAction.return_value = mock_action
     mock_menu.exec_.return_value = mock_action
-    mfs = mu.interface.panes.MicrobitFileList('homepath')
+    mfs = mu.interface.panes.MicrobitFileList('homepath', 'device name')
     mock_current = mock.MagicMock()
     mock_current.text.return_value = 'foo.py'
     mfs.currentItem = mock.MagicMock(return_value=mock_current)
@@ -520,11 +520,11 @@ def test_MicrobitFileList_on_delete():
     """
     On delete should emit a message and list_files signal.
     """
-    mfs = mu.interface.panes.MicrobitFileList('homepath')
+    mfs = mu.interface.panes.MicrobitFileList('homepath', 'device name')
     mfs.set_message = mock.MagicMock()
     mfs.list_files = mock.MagicMock()
     mfs.on_delete('my_file.py')
-    msg = "'my_file.py' successfully deleted from micro:bit."
+    msg = "'my_file.py' successfully deleted from device name."
     mfs.set_message.emit.assert_called_once_with(msg)
     mfs.list_files.emit.assert_called_once_with()
 
@@ -533,7 +533,7 @@ def test_LocalFileList_init():
     """
     Ensure the class instantiates with the expected state.
     """
-    lfl = mu.interface.panes.LocalFileList('home/path')
+    lfl = mu.interface.panes.LocalFileList('home/path', 'device name')
     assert lfl.home == 'home/path'
     assert lfl.dragDropMode() == lfl.DragDrop
 
@@ -543,12 +543,12 @@ def test_LocalFileList_dropEvent():
     Ensure a valid drop event is handled as expected.
     """
     mock_event = mock.MagicMock()
-    source = mu.interface.panes.MicrobitFileList('homepath')
+    source = mu.interface.panes.MicrobitFileList('homepath', 'device name')
     mock_item = mock.MagicMock()
     mock_item.text.return_value = 'foo.py'
     source.currentItem = mock.MagicMock(return_value=mock_item)
     mock_event.source.return_value = source
-    lfs = mu.interface.panes.LocalFileList('homepath')
+    lfs = mu.interface.panes.LocalFileList('homepath', 'device name')
     lfs.disable = mock.MagicMock()
     lfs.set_message = mock.MagicMock()
     lfs.get = mock.MagicMock()
@@ -568,7 +568,7 @@ def test_LocalFileList_dropEvent_wrong_source():
     mock_event = mock.MagicMock()
     source = mock.MagicMock()
     mock_event.source.return_value = source
-    lfs = mu.interface.panes.LocalFileList('homepath')
+    lfs = mu.interface.panes.LocalFileList('homepath', 'device name')
     lfs.findItems = mock.MagicMock()
     lfs.dropEvent(mock_event)
     assert lfs.findItems.call_count == 0
@@ -578,11 +578,11 @@ def test_LocalFileList_on_get():
     """
     On get should emit two signals: a message and list_files.
     """
-    lfs = mu.interface.panes.LocalFileList('homepath')
+    lfs = mu.interface.panes.LocalFileList('homepath', 'device name')
     lfs.set_message = mock.MagicMock()
     lfs.list_files = mock.MagicMock()
     lfs.on_get('my_file.py')
-    msg = ("Successfully copied 'my_file.py' from the micro:bit "
+    msg = ("Successfully copied 'my_file.py' from the device "
            "to your computer.")
     lfs.set_message.emit.assert_called_once_with(msg)
     lfs.list_files.emit.assert_called_once_with()
@@ -599,7 +599,7 @@ def test_LocalFileList_contextMenuEvent():
     mock_menu.addAction.side_effect = [mock_action_first,
                                        mock_action_second]
     mock_menu.exec_.return_value = mock_action_first
-    mfs = mu.interface.panes.LocalFileList('homepath')
+    mfs = mu.interface.panes.LocalFileList('homepath', 'device name')
     mock_open = mock.MagicMock()
     mfs.open_file = mock.MagicMock()
     mfs.open_file.emit = mock_open
@@ -624,7 +624,7 @@ def test_LocalFileList_contextMenuEvent_external():
     mock_action = mock.MagicMock()
     mock_menu.addAction.side_effect = [mock_action, mock.MagicMock()]
     mock_menu.exec_.return_value = mock_action
-    mfs = mu.interface.panes.LocalFileList('homepath')
+    mfs = mu.interface.panes.LocalFileList('homepath', 'device name')
     mock_open = mock.MagicMock()
     mfs.open_file = mock.MagicMock()
     mfs.open_file.emit = mock_open
@@ -645,17 +645,17 @@ def test_FileSystemPane_init():
     Check things are set up as expected.
     """
     home = 'homepath'
-    test_microbit_fs = mu.interface.panes.MicrobitFileList(home)
+    test_microbit_fs = mu.interface.panes.MicrobitFileList(home, 'device name')
     test_microbit_fs.disable = mock.MagicMock()
     test_microbit_fs.set_message = mock.MagicMock()
-    test_local_fs = mu.interface.panes.LocalFileList(home)
+    test_local_fs = mu.interface.panes.LocalFileList(home, 'device name')
     test_local_fs.disable = mock.MagicMock()
     test_local_fs.set_message = mock.MagicMock()
     mock_mfl = mock.MagicMock(return_value=test_microbit_fs)
     mock_lfl = mock.MagicMock(return_value=test_local_fs)
     with mock.patch('mu.interface.panes.MicrobitFileList', mock_mfl), \
             mock.patch('mu.interface.panes.LocalFileList', mock_lfl):
-        fsp = mu.interface.panes.FileSystemPane('homepath')
+        fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
         assert isinstance(fsp.microbit_label, QLabel)
         assert isinstance(fsp.local_label, QLabel)
         assert fsp.microbit_fs == test_microbit_fs
@@ -672,7 +672,7 @@ def test_FileSystemPane_disable():
     """
     The child list widgets are disabled correctly.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.microbit_fs = mock.MagicMock()
     fsp.local_fs = mock.MagicMock()
     fsp.disable()
@@ -686,7 +686,7 @@ def test_FileSystemPane_enable():
     """
     The child list widgets are enabled correctly.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.microbit_fs = mock.MagicMock()
     fsp.local_fs = mock.MagicMock()
     fsp.enable()
@@ -700,7 +700,7 @@ def test_FileSystemPane_set_theme():
     """
     Setting theme doesn't error
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.set_theme('test')
 
 
@@ -708,7 +708,7 @@ def test_FileSystemPane_show_message():
     """
     Ensure the expected message signal is emitted.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.set_message = mock.MagicMock()
     fsp.show_message('Hello')
     fsp.set_message.emit.assert_called_once_with('Hello')
@@ -718,7 +718,7 @@ def test_FileSystemPane_show_warning():
     """
     Ensure the expected warning signal is emitted.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.set_warning = mock.MagicMock()
     fsp.show_warning('Hello')
     fsp.set_warning.emit.assert_called_once_with('Hello')
@@ -730,7 +730,7 @@ def test_FileSystemPane_on_ls():
     filesystem, make sure they're properly processed by the on_ls event
     handler.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     microbit_files = ['foo.py', 'bar.py', ]
     fsp.microbit_fs = mock.MagicMock()
     fsp.local_fs = mock.MagicMock()
@@ -752,7 +752,7 @@ def test_FileSystemPane_on_ls_fail():
     """
     A warning is emitted and the widget disabled if listing files fails.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.show_warning = mock.MagicMock()
     fsp.disable = mock.MagicMock()
     fsp.on_ls_fail()
@@ -764,7 +764,7 @@ def test_FileSystem_Pane_on_put_fail():
     """
     A warning is emitted if putting files on the micro:bit fails.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.show_warning = mock.MagicMock()
     fsp.on_put_fail('foo.py')
     assert fsp.show_warning.call_count == 1
@@ -774,7 +774,7 @@ def test_FileSystem_Pane_on_delete_fail():
     """
     A warning is emitted if deleting files on the micro:bit fails.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.show_warning = mock.MagicMock()
     fsp.on_delete_fail('foo.py')
     assert fsp.show_warning.call_count == 1
@@ -784,7 +784,7 @@ def test_FileSystem_Pane_on_get_fail():
     """
     A warning is emitted if getting files from the micro:bit fails.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.show_warning = mock.MagicMock()
     fsp.on_get_fail('foo.py')
     assert fsp.show_warning.call_count == 1
@@ -795,7 +795,7 @@ def test_FileSystemPane_set_font_size():
     Ensure the right size is set as the point size and the text based UI child
     widgets are updated.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.font = mock.MagicMock()
     fsp.microbit_label = mock.MagicMock()
     fsp.local_label = mock.MagicMock()
@@ -813,7 +813,7 @@ def test_FileSystemPane_zoom_in():
     """
     Ensure the font is re-set bigger when zooming in.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.set_font_size = mock.MagicMock()
     fsp.zoomIn()
     expected = mu.interface.themes.DEFAULT_FONT_SIZE + 2
@@ -824,7 +824,7 @@ def test_FileSystemPane_open_file():
     """
     FileSystemPane should propogate the open_file signal
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.open_file = mock.MagicMock()
     mock_open_emit = mock.MagicMock()
     fsp.open_file.emit = mock_open_emit
@@ -836,7 +836,7 @@ def test_FileSystemPane_zoom_out():
     """
     Ensure the font is re-set smaller when zooming out.
     """
-    fsp = mu.interface.panes.FileSystemPane('homepath')
+    fsp = mu.interface.panes.FileSystemPane('homepath', 'device name')
     fsp.set_font_size = mock.MagicMock()
     fsp.zoomOut()
     expected = mu.interface.themes.DEFAULT_FONT_SIZE - 2

@@ -641,8 +641,10 @@ def test_Window_add_filesystem():
     mock_file_manager = mock.MagicMock()
     with mock.patch('mu.interface.main.FileSystemPane', mock_fs_class), \
             mock.patch('mu.interface.main.QDockWidget', mock_dock_class):
-        result = w.add_filesystem('path/to/home', mock_file_manager)
-    mock_fs_class.assert_called_once_with('path/to/home')
+        result = w.add_filesystem('path/to/home',
+                                  mock_file_manager,
+                                  "device name")
+    mock_fs_class.assert_called_once_with('path/to/home', 'device name')
     assert result == mock_fs
     assert w.fs_pane == mock_fs
     w.addDockWidget.assert_called_once_with(Qt.BottomDockWidgetArea, mock_dock)
@@ -681,7 +683,7 @@ def test_Window_add_filesystem_open_signal():
     w.open_file = mock.MagicMock()
     mock_open_emit = mock.MagicMock()
     w.open_file.emit = mock_open_emit
-    pane = w.add_filesystem('homepath', mock.MagicMock())
+    pane = w.add_filesystem('homepath', mock.MagicMock(), "device_name")
     pane.open_file.emit('test')
     mock_open_emit.assert_called_once_with('test')
 

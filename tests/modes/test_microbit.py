@@ -1066,7 +1066,9 @@ def test_add_fs():
         mm.find_device = mock.MagicMock(return_value=('COM0', '12345'))
         mm.add_fs()
         workspace = mm.workspace_dir()
-        view.add_filesystem.assert_called_once_with(workspace, mock_fm())
+        view.add_filesystem.assert_called_once_with(workspace,
+                                                    mock_fm(),
+                                                    mm.name)
         assert mm.fs
 
 
