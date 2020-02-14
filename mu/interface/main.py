@@ -39,6 +39,7 @@ from PyQt5.QtWidgets import (
     QTabBar,
     QPushButton,
     QHBoxLayout,
+    QComboBox,
 )
 from PyQt5.QtGui import QKeySequence, QStandardItemModel
 from PyQt5.QtSerialPort import QSerialPort
@@ -1219,6 +1220,16 @@ class StatusBar(QStatusBar):
     def __init__(self, parent=None, mode="python"):
         super().__init__(parent)
         self.mode = mode
+        # Device selector
+        self.device_selector = QComboBox()
+        self.device_selector.setInsertPolicy(QComboBox.InsertAlphabetically)
+        self.device_selector.addItems(["COM1: micro:bit",
+                                       "/dev/tty.usbserial-A152130CB6: Sparkfun ESP32 Thing",
+                                       "COM7: WeMos D1 mini",
+                                       "COM8: Unrecognized device"])
+
+        self.addPermanentWidget(self.device_selector)
+        
         # Mode selector.
         self.mode_label = QLabel()
         self.mode_label.setToolTip(_("Mu's current mode of behaviour."))
