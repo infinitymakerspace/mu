@@ -451,6 +451,7 @@ class LocalFileList(MuFileList):
     """
 
     get = pyqtSignal(str, str)
+    put = pyqtSignal(str, str)
     open_file = pyqtSignal(str)
 
     def __init__(self, home):
@@ -498,6 +499,9 @@ class LocalFileList(MuFileList):
         # Mu micro:bit mode only handles .py & .hex
         if ext == ".py" or ext == ".hex":
             open_internal_action = menu.addAction(_("Open in Mu"))
+            write_to_main_action = menu.addAction(
+                _("Write to main.py on device")
+            )
         # Open outside Mu (things get meta if Mu is the default application)
         open_action = menu.addAction(_("Open"))
         action = menu.exec_(self.mapToGlobal(event.pos()))
@@ -516,6 +520,9 @@ class LocalFileList(MuFileList):
             path = os.path.join(self.home, local_filename)
             # Send the signal bubbling up the tree
             self.open_file.emit(path)
+        elif action == write_to_main_action:
+            path = os.path.join(self.home, local_filename)
+            self.put.emit(path, "main.py")
 
 
 class FileSystemPane(QFrame):
